@@ -1,0 +1,50 @@
+Link : https://leetcode.com/problems/word-ladder/
+Sol Link : https://leetcode.com/problems/word-ladder/discuss/1764371/A-very-highly-detailed-EXPLANATION
+
+PS : 
+Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log","cog"]
+Output: 5
+Explanation: One shortest transformation sequence is "hit" -> "hot" -> "dot" -> "dog" -> cog", which is 5 words long.
+
+Code :
+public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        Set<String> set = new HashSet<>(wordList);
+        if(!set.contains(endWord)) return 0;
+        
+        Queue<String> queue = new LinkedList<>();
+        queue.add(beginWord);
+        
+        Set<String> visited = new HashSet<>();
+        queue.add(beginWord);
+        
+        int changes = 1;
+        
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            for(int i = 0; i < size; i++){
+                String word = queue.poll();
+                if(word.equals(endWord)) return changes;
+                
+                for(int j = 0; j < word.length(); j++){
+                    for(int k = 'a'; k <= 'z'; k++){
+                        char arr[] = word.toCharArray();
+                        arr[j] = (char) k;
+                        
+                        String str = new String(arr);
+                        if(set.contains(str) && !visited.contains(str)){
+                            queue.add(str);
+                            visited.add(str);
+                        }
+                    }
+                }
+            }
+            ++changes;
+        }
+        return 0;
+    }
+ANALYSIS :-
+
+Time Complexity :- BigO(M^2 * N), where M is size of dequeued word & N is size of our word list
+
+Space Complexity :- BigO(M * N) where M is no. of character that we had in our string & N is the size of our wordList.
+
