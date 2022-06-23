@@ -8,40 +8,36 @@ To take course 1 you should have finished course 0, and to take course 0 you sho
 Code : 
 class Solution {
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        ArrayList[] graph = new ArrayList[numCourses];
-        int[] degree = new int[numCourses];
-        Queue queue = new LinkedList();
-        int count=0;
-        
-        for(int i=0;i<numCourses;i++)
-            graph[i] = new ArrayList();
-            
-        //Indegree Calculation 
-        for(int i=0; i<prerequisites.length;i++){
-            degree[prerequisites[i][1]]++;
-            graph[prerequisites[i][0]].add(prerequisites[i][1]);
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+        for(int i=0 ; i<numCourses ; i++){
+            adj.add(new ArrayList<>());
         }
-        for(int i=0; i<degree.length;i++){
-            if(degree[i] == 0){
-                queue.add(i);
-                count++;
+        for(int pair[] : prerequisites){
+            adj.get(pair[0]).add(pair[1]);
+        }
+        int indegree[] = new int[numCourses];
+        for(int i=0 ; i<numCourses ; i++){
+            for(int it : adj.get(i)){
+                indegree[it]++;
             }
         }
-        
-        while(queue.size() != 0){
-            int course = (int)queue.poll();
-            for(int i=0; i<graph[course].size();i++){
-                int pointer = (int)graph[course].get(i);
-                degree[pointer]--;
-                if(degree[pointer] == 0){
-                    queue.add(pointer);
-                    count++;
+        Queue<Integer> q = new LinkedList<>();
+        for(int i=0 ; i<numCourses ; i++){
+            if(indegree[i] == 0){
+                q.add(i);
+            }
+        }
+        int count = 0;
+        while(!q.isEmpty()){
+            int node = q.poll();
+            count++;
+            for(int it : adj.get(node)){
+                indegree[it]--;
+                if(indegree[it] == 0){
+                    q.add(it);
                 }
             }
         }
-        if(count == numCourses)
-            return true;
-        else    
-            return false;
+        return count == numCourses;
     }
 }
