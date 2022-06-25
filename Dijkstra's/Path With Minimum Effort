@@ -1,0 +1,47 @@
+Link : https://leetcode.com/problems/path-with-minimum-effort/
+PS:
+Input: heights = [[1,2,2],[3,8,2],[5,3,5]]
+Output: 2
+Explanation: The route of [1,3,5,3,5] has a maximum absolute difference of 2 in consecutive cells.
+This is better than the route of [1,2,2,2,5], where the maximum absolute difference is 3.
+
+Code :
+class Solution {
+    public int minimumEffortPath(int[][] heights) {
+        int m = heights.length;
+        int n = heights[0].length;
+        
+        int[][] effort = new int[m][n];
+        for(int i=0;i<m;i++){
+            Arrays.fill(effort[i],Integer.MAX_VALUE);
+        }
+        //int[] = {dist,row,col}
+        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparing(a->a[0]));
+        pq.offer(new int[]{0,0,0}); //for src node 
+        
+        int[][] dir = {{0,1},{0,-1},{1,0},{-1,0}}; //for moving up,down,left and right
+        while(!pq.isEmpty()){
+            int[] min = pq.poll();
+            int dist = min[0],row=min[1],col=min[2];
+            if(dist > effort[row][col])
+                continue;
+            if(row == m-1 && col == n-1)
+                return dist;
+            for(int[] d : dir){//for adjacent nodes
+                int newRow = row+d[0];
+                int newCol = col+d[1];
+                if(newRow >= 0 && newRow < m && newCol >= 0 && newCol < n){
+                    int newDist = Math.max(dist,Math.abs(heights[newRow][newCol]-heights[row][col]));
+                    if(newDist < effort[newRow][newCol]){
+                        effort[newRow][newCol] = newDist;
+                        pq.offer(new int[]{newDist,newRow,newCol});
+                    }
+                }
+            }
+        }
+        return 0;
+        
+    }
+}
+
+TE : Same as dijkstra's
